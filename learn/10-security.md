@@ -22,12 +22,12 @@ graph TB
 
 ### 何时需要授权？
 
-| 场景                        | 是否需要授权 | 原因                     |
-| --------------------------- | ------------ | ------------------------ |
-| 本地 stdio Server           | 通常不需要   | 进程隔离提供安全性       |
-| 远程 HTTP Server（公开数据）| 可能不需要   | 取决于数据敏感程度       |
-| 远程 HTTP Server（用户数据）| ✅ 需要      | 必须验证用户身份和权限   |
-| 企业内部 Server             | ✅ 需要      | 访问控制和审计要求       |
+| 场景                         | 是否需要授权 | 原因                   |
+| ---------------------------- | ------------ | ---------------------- |
+| 本地 stdio Server            | 通常不需要   | 进程隔离提供安全性     |
+| 远程 HTTP Server（公开数据） | 可能不需要   | 取决于数据敏感程度     |
+| 远程 HTTP Server（用户数据） | ✅ 需要      | 必须验证用户身份和权限 |
+| 企业内部 Server              | ✅ 需要      | 访问控制和审计要求     |
 
 ### OAuth 2.1 授权流程
 
@@ -101,9 +101,7 @@ Host: server.example.com
 ```json
 {
   "resource": "https://server.example.com",
-  "authorization_servers": [
-    "https://auth.example.com"
-  ],
+  "authorization_servers": ["https://auth.example.com"],
   "scopes_supported": ["mcp:tools", "mcp:resources", "mcp:prompts"]
 }
 ```
@@ -207,6 +205,7 @@ graph LR
 ```
 
 Server 应该：
+
 1. 验证收到的令牌是颁发给**自己**的（audience 校验）
 2. 使用自己的凭证访问下游 API
 3. 实施独立的访问控制逻辑
@@ -357,14 +356,14 @@ def require_auth(f):
 
 ## 📌 小结
 
-| 概念             | 要点                                           |
-| ---------------- | ---------------------------------------------- |
-| 安全原则         | 用户同意、数据隐私、工具安全、采样控制         |
-| 授权标准         | OAuth 2.1（HTTP 传输）                         |
-| 发现机制         | WWW-Authenticate 头 / Well-Known URI           |
-| 主要威胁         | 混淆代理攻击、令牌透传                         |
-| 传输安全         | HTTPS、Origin 校验、127.0.0.1 绑定            |
-| 令牌安全         | Audience 校验、安全存储、定期轮换              |
+| 概念     | 要点                                   |
+| -------- | -------------------------------------- |
+| 安全原则 | 用户同意、数据隐私、工具安全、采样控制 |
+| 授权标准 | OAuth 2.1（HTTP 传输）                 |
+| 发现机制 | WWW-Authenticate 头 / Well-Known URI   |
+| 主要威胁 | 混淆代理攻击、令牌透传                 |
+| 传输安全 | HTTPS、Origin 校验、127.0.0.1 绑定     |
+| 令牌安全 | Audience 校验、安全存储、定期轮换      |
 
 ---
 

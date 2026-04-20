@@ -19,11 +19,13 @@
 我们提供 **Python** 和 **TypeScript** 两个版本的实现。
 
 **Python 版本需要**：
+
 - Python 3.10+
 - `mcp` SDK（`pip install mcp`）
 - `httpx`（HTTP 客户端，`pip install httpx`）
 
 **TypeScript 版本需要**：
+
 - Node.js 18+
 - `@modelcontextprotocol/sdk`
 
@@ -287,6 +289,7 @@ npx @modelcontextprotocol/inspector python src/weather_server/server.py
 ```
 
 MCP Inspector 提供了可视化的测试界面，可以：
+
 - 查看 Server 暴露的所有 Tools / Resources / Prompts
 - 手动调用工具并查看结果
 - 检查协议消息的来回传递
@@ -365,7 +368,9 @@ server.tool(
     state: z.string().length(2).describe("州的两字母缩写，如 CA、NY"),
   },
   async ({ state }) => {
-    const data = await makeNwsRequest(`${NWS_BASE}/alerts/active?area=${state}`);
+    const data = await makeNwsRequest(
+      `${NWS_BASE}/alerts/active?area=${state}`,
+    );
     if (!data?.features?.length) {
       return {
         content: [{ type: "text", text: `${state} 当前没有活跃的天气预警。` }],
@@ -380,7 +385,7 @@ server.tool(
       .join("\n---\n");
 
     return { content: [{ type: "text", text: alerts }] };
-  }
+  },
 );
 
 server.tool(
@@ -392,7 +397,7 @@ server.tool(
   },
   async ({ latitude, longitude }) => {
     const pointsData = await makeNwsRequest(
-      `${NWS_BASE}/points/${latitude},${longitude}`
+      `${NWS_BASE}/points/${latitude},${longitude}`,
     );
     if (!pointsData) {
       return {
@@ -400,9 +405,7 @@ server.tool(
         isError: true,
       };
     }
-    const forecastData = await makeNwsRequest(
-      pointsData.properties.forecast
-    );
+    const forecastData = await makeNwsRequest(pointsData.properties.forecast);
     if (!forecastData) {
       return {
         content: [{ type: "text", text: "无法获取预报数据。" }],
@@ -413,12 +416,12 @@ server.tool(
       .slice(0, 5)
       .map(
         (p: any) =>
-          `📅 ${p.name}: ${p.temperature}°${p.temperatureUnit}, ${p.shortForecast}`
+          `📅 ${p.name}: ${p.temperature}°${p.temperatureUnit}, ${p.shortForecast}`,
       )
       .join("\n");
 
     return { content: [{ type: "text", text: forecasts }] };
-  }
+  },
 );
 
 // ━━━━━━━━━━━━ 定义 Resources ━━━━━━━━━━━━
@@ -438,7 +441,7 @@ server.resource(
         }),
       },
     ],
-  })
+  }),
 );
 
 // ━━━━━━━━━━━━ 定义 Prompts ━━━━━━━━━━━━
@@ -457,7 +460,7 @@ server.prompt(
         },
       },
     ],
-  })
+  }),
 );
 
 // ━━━━━━━━━━━━ 启动 Server ━━━━━━━━━━━━
@@ -525,15 +528,15 @@ echo '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":
 
 ## 📌 小结
 
-| 步骤             | 要点                                           |
-| ---------------- | ---------------------------------------------- |
-| 项目初始化       | 安装 MCP SDK + 依赖                           |
-| 定义 Tools       | `@mcp.tool()` 装饰器 + 类型注解 + docstring   |
-| 定义 Resources   | `@mcp.resource(uri)` 装饰器                    |
-| 定义 Prompts     | `@mcp.prompt()` 装饰器                         |
-| 测试             | MCP Inspector 可视化调试                       |
-| 集成             | Claude Desktop 配置文件                        |
-| 日志             | 只能输出到 stderr，不能输出到 stdout           |
+| 步骤           | 要点                                        |
+| -------------- | ------------------------------------------- |
+| 项目初始化     | 安装 MCP SDK + 依赖                         |
+| 定义 Tools     | `@mcp.tool()` 装饰器 + 类型注解 + docstring |
+| 定义 Resources | `@mcp.resource(uri)` 装饰器                 |
+| 定义 Prompts   | `@mcp.prompt()` 装饰器                      |
+| 测试           | MCP Inspector 可视化调试                    |
+| 集成           | Claude Desktop 配置文件                     |
+| 日志           | 只能输出到 stderr，不能输出到 stdout        |
 
 ---
 

@@ -45,11 +45,11 @@ sequenceDiagram
 
 ### 三条通道的分工
 
-| 通道     | 方向            | 用途                        | 注意事项                       |
-| -------- | --------------- | --------------------------- | ------------------------------ |
-| `stdin`  | Client → Server | 发送 JSON-RPC 消息          | 关闭 stdin 触发 Server 关闭    |
-| `stdout` | Server → Client | 返回 JSON-RPC 消息          | **只能**输出合法的 MCP 消息    |
-| `stderr` | Server → Client | 日志和调试信息              | Client 可以忽略或记录          |
+| 通道     | 方向            | 用途               | 注意事项                    |
+| -------- | --------------- | ------------------ | --------------------------- |
+| `stdin`  | Client → Server | 发送 JSON-RPC 消息 | 关闭 stdin 触发 Server 关闭 |
+| `stdout` | Server → Client | 返回 JSON-RPC 消息 | **只能**输出合法的 MCP 消息 |
+| `stderr` | Server → Client | 日志和调试信息     | Client 可以忽略或记录       |
 
 ### 消息格式规则
 
@@ -227,6 +227,7 @@ sequenceDiagram
 ```
 
 **会话 ID 要求**：
+
 - 必须是全局唯一的、加密安全的（UUID 或 JWT 格式）
 - Client 必须在后续所有请求中携带
 - Server 可以随时终止会话（返回 404）
@@ -254,6 +255,7 @@ sequenceDiagram
 ```
 
 **机制**：
+
 - Server 为每个 SSE 事件分配唯一 ID
 - Client 重连时通过 `Last-Event-ID` 头告知最后收到的事件
 - Server 从断点位置重新发送后续事件
@@ -262,17 +264,17 @@ sequenceDiagram
 
 ## ⚖️ 两种传输方式对比
 
-| 特性             | stdio                  | Streamable HTTP              |
-| ---------------- | ---------------------- | ---------------------------- |
-| 部署方式         | 子进程                 | 独立 HTTP 服务               |
-| 并发客户端       | 1 个                   | 多个                         |
-| 网络需求         | 无                     | 需要                         |
-| 认证支持         | 不需要（进程隔离）     | OAuth 2.1 等                 |
-| 断线重连         | 不适用                 | 支持（SSE + Last-Event-ID）  |
-| 会话管理         | 隐式（进程生命周期）   | 显式（Session ID）           |
-| 安全考量         | 进程级隔离             | Origin 校验、HTTPS、认证     |
-| 实现复杂度       | 低                     | 高                           |
-| 性能             | 低延迟（本地进程间通信）| 取决于网络                  |
+| 特性       | stdio                    | Streamable HTTP             |
+| ---------- | ------------------------ | --------------------------- |
+| 部署方式   | 子进程                   | 独立 HTTP 服务              |
+| 并发客户端 | 1 个                     | 多个                        |
+| 网络需求   | 无                       | 需要                        |
+| 认证支持   | 不需要（进程隔离）       | OAuth 2.1 等                |
+| 断线重连   | 不适用                   | 支持（SSE + Last-Event-ID） |
+| 会话管理   | 隐式（进程生命周期）     | 显式（Session ID）          |
+| 安全考量   | 进程级隔离               | Origin 校验、HTTPS、认证    |
+| 实现复杂度 | 低                       | 高                          |
+| 性能       | 低延迟（本地进程间通信） | 取决于网络                  |
 
 ### 选型建议
 
@@ -385,14 +387,14 @@ HTTP/1.1 403 Forbidden
 
 ## 📌 小结
 
-| 概念              | 要点                                           |
-| ----------------- | ---------------------------------------------- |
-| stdio 传输        | 子进程方式，stdin/stdout 通信，简单本地场景     |
-| Streamable HTTP   | HTTP POST + SSE，支持远程和多客户端             |
-| 消息分隔          | stdio 用换行符，HTTP 用标准 HTTP 响应           |
-| 会话管理          | HTTP 通过 `MCP-Session-Id` 头维护               |
-| 断线重连          | HTTP 通过 SSE `Last-Event-ID` 实现              |
-| 安全              | HTTP 必须校验 Origin、绑定 localhost、实现认证   |
+| 概念            | 要点                                           |
+| --------------- | ---------------------------------------------- |
+| stdio 传输      | 子进程方式，stdin/stdout 通信，简单本地场景    |
+| Streamable HTTP | HTTP POST + SSE，支持远程和多客户端            |
+| 消息分隔        | stdio 用换行符，HTTP 用标准 HTTP 响应          |
+| 会话管理        | HTTP 通过 `MCP-Session-Id` 头维护              |
+| 断线重连        | HTTP 通过 SSE `Last-Event-ID` 实现             |
+| 安全            | HTTP 必须校验 Origin、绑定 localhost、实现认证 |
 
 ---
 

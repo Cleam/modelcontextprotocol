@@ -28,6 +28,7 @@ Sampling 允许 Server **请求 Client 的 AI 生成文本**。这意味着 Serv
 
 MCP 做法：Server 通过 Sampling 向 Client 请求 AI 生成。
 好处：
+
 - Server **无需 API 密钥**（Client 已有 LLM 接入）
 - 用户**可以审查**请求和响应
 - Client 控制**使用哪个模型**和**花费多少**
@@ -92,10 +93,7 @@ Server 可以通过 `modelPreferences` 表达对模型选择的偏好，但最�
 ```json
 {
   "modelPreferences": {
-    "hints": [
-      { "name": "claude-3-sonnet" },
-      { "name": "gpt-4" }
-    ],
+    "hints": [{ "name": "claude-3-sonnet" }, { "name": "gpt-4" }],
     "intelligencePriority": 0.8,
     "speedPriority": 0.3,
     "costPriority": 0.5
@@ -196,12 +194,12 @@ sequenceDiagram
 
 ### 使用场景
 
-| 场景             | Roots 示例                                   |
-| ---------------- | -------------------------------------------- |
-| IDE 工作区       | 当前打开的项目目录                           |
-| 多仓库工作       | monorepo 中的几个子包目录                    |
-| 文件管理工具     | 用户指定的管理目录                           |
-| 配置文件搜索     | 限定搜索范围，避免扫描整个文件系统           |
+| 场景         | Roots 示例                         |
+| ------------ | ---------------------------------- |
+| IDE 工作区   | 当前打开的项目目录                 |
+| 多仓库工作   | monorepo 中的几个子包目录          |
+| 文件管理工具 | 用户指定的管理目录                 |
+| 配置文件搜索 | 限定搜索范围，避免扫描整个文件系统 |
 
 ---
 
@@ -340,11 +338,11 @@ Client 可以只支持其中一种模式。为了向后兼容，空对象 `{}` �
 
 ## 📊 三种客户端能力对比
 
-| 能力          | 场景                 | 数据流向           | 安全控制         |
-| ------------- | -------------------- | ------------------ | ---------------- |
-| **Sampling**  | Server 需要 AI 推理  | Server → Client AI | 人工审查请求和回复 |
-| **Roots**     | Server 需要知道工作范围 | Client → Server  | 建议性边界       |
-| **Elicitation** | Server 需要用户信息 | Server → 用户 → Server | 用户可拒绝     |
+| 能力            | 场景                    | 数据流向               | 安全控制           |
+| --------------- | ----------------------- | ---------------------- | ------------------ |
+| **Sampling**    | Server 需要 AI 推理     | Server → Client AI     | 人工审查请求和回复 |
+| **Roots**       | Server 需要知道工作范围 | Client → Server        | 建议性边界         |
+| **Elicitation** | Server 需要用户信息     | Server → 用户 → Server | 用户可拒绝         |
 
 用一个完整的例子把三者串联起来：
 
@@ -384,11 +382,11 @@ sequenceDiagram
 
 ## 📌 小结
 
-| 能力          | 核心作用                | 控制方  | 安全要点                   |
-| ------------- | ----------------------- | ------- | -------------------------- |
-| Sampling      | Server 借用 AI 推理能力 | Client  | 人工审查，不泄露 API 密钥  |
-| Roots         | 告知 Server 工作范围    | Client  | 建议性边界，非安全隔离     |
-| Elicitation   | 动态收集用户信息        | 用户    | 敏感数据必须用 URL 模式    |
+| 能力        | 核心作用                | 控制方 | 安全要点                  |
+| ----------- | ----------------------- | ------ | ------------------------- |
+| Sampling    | Server 借用 AI 推理能力 | Client | 人工审查，不泄露 API 密钥 |
+| Roots       | 告知 Server 工作范围    | Client | 建议性边界，非安全隔离    |
+| Elicitation | 动态收集用户信息        | 用户   | 敏感数据必须用 URL 模式   |
 
 ---
 
